@@ -7,7 +7,7 @@ import requests
 from user import User
 
 class Chat:
-    def __init__(self,token, group_chat_id=None, logging = True, working = True, strict = False, bootlog = True):
+    def __init__(self,token, group_chat_id=None, bootlog = True):
         self.token = token
         self.chat_id = group_chat_id
         self.users = {}

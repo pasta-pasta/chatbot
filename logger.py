@@ -38,10 +38,10 @@ class Logger:
         chat = self.listener.main.chats[peer]
 
 
-        if command == "exile":
-            pass #имплементируй логику команд, лучше чере з switch
+        match command:
+            case "init":
+                pass #имплементация команд
 
-        self.listener.main.save_chats()
 
 
     async def log_msg(self, object_data):
