@@ -12,6 +12,7 @@ import listener
 import logger
 import sys
 
+#Этот класс -- синхронизатор между всеми частями приложения. 
 
 class bot:
     def __init__(self, token: str):
@@ -26,7 +27,7 @@ class bot:
 
     async def initialize_chat(self, new_chat):
         if isinstance(new_chat, int):
-            new_chat = chat.Chat(self.token, new_chat)
+            new_chat = chat.Chat(self.token, new_chat)  #Эта функция инициализирует все чаты, которые есть в словаре чатов. Также может быть вызвана внешне, и вызывается при добавлении бота в новый чат.
             self.chats[new_chat.chat_id] = new_chat
         if new_chat.bootlog:
             pass #соо о включениии
@@ -35,9 +36,9 @@ class bot:
         for i in self.chats.values():
             if i.bootlog:
                 pass  # соо о выключениии
-        self.save_chats()
+        self.save_chats() #сохранение чатов, и, если нужно, соо о выключении
 
-
+    #логика сохранений и загрузки чатов
     def save_chats(self):
         chat_data = []
         for chat in self.chats.values():
@@ -68,7 +69,7 @@ class bot:
         return chat_dic
 
 
-    def extract_id(self, tag): #вытаскивает айди из тега
+    def extract_id(self, tag): #вытаскивает айди из тега (вк передает тег формата @tag как [@tag|id123123123]. функция вытаскивает айди)
         if isinstance(tag, int):
             return tag
         elif isinstance(tag, str):

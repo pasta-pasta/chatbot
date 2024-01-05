@@ -12,6 +12,8 @@ from fastapi.responses import Response
 
 import bot
 
+#создаем апу, логгер и класс бота
+
 app = FastAPI()
 
 logging.basicConfig(level=logging.ERROR,
@@ -20,7 +22,7 @@ logging.basicConfig(level=logging.ERROR,
                     )
 logger = logging.getLogger(__name__)
 
-bot = bot.bot("vk1.a.VA2ngPKXS_oMPLbOgy0HeQmspb5XLP7XNdKkXZ1HVEvg4uJIGjC_dHgY443c__IhL0ad2RmqEgUa77lI7Gk8MZqsjUUjqdbyiTo0Fq88kLsfRw-jOpyuPuhM3uL3EGA5AM7tlMbOpqGnb41RmDqjdIGD1ouaj-gJnxbsqyV_Fhv46h-gaRoDdd8fKNT3ri7Yhs7AT5BdtiguS07uzEonZA"
+bot = bot.bot("YOUR_vk_TOKEN_HERE"
 )
 
 async def handle(data):
@@ -28,16 +30,17 @@ async def handle(data):
     await bot.listener.handle_update(data)
 
 
-# Create a rotating file handler that logs error messages and rotates at 5MB
+# Создаем обработчик логов
 handler = RotatingFileHandler('boticon.error', maxBytes=5*1024*1024, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 handler.setFormatter(formatter)
 
 # Add the handler to the logger
 logger.addHandler(handler)
+
+#Инициализация бота, любые нужные действия
 @app.on_event("startup")
 async def on_startup():
-    # your initialization logic here
     await bot.init()
 
 @app.exception_handler(Exception)
@@ -45,9 +48,9 @@ async def universal_exception_handler(request: Request, exc: Exception):
     logging.error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
+#Смерть бота, вызывается при выключении и рестарте, сохраняет данные
 @app.on_event("shutdown")
 async def on_shutdown():
-    # your initialization logic here
     bot.shutdown()
 
 # Запросы на корневой адрес (GET, OPTIONS)
@@ -56,7 +59,7 @@ async def get_request():
     return "Alive!"
 
 
-# Запросы на корневой адрес (POST)
+# Запросы на корневой адрес (POST). Вызывает обратку
 @app.post("/bot")
 async def post_request(request: Request):
     data = await request.json()
@@ -66,7 +69,7 @@ async def post_request(request: Request):
         print(f"Exception! {e}")
         try:
             if data['type'] == 'confirmation':
-                return Response(content="14faaa59", media_type="text/plain")
+                return Response(content="14faaa59", media_type="text/plain") #В content надо впихнуть confirmation code от группы, к которой подключаете бота.
         except:
             return Response(content="ok", media_type="text/plain")
     return Response(content="ok", media_type="text/plain")
